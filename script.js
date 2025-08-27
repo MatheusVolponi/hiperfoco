@@ -11,13 +11,18 @@ const curtoDuration = 300;
 const longoDuration = 900;
 
 focoButton.addEventListener('click', () => {
-    html.setAttribute('data-context', 'foco');
+    changeContext('foco');
 })
 
 curtoButton.addEventListener('click', () => {
-    html.setAttribute('data-context', 'short');
+    changeContext('short');
 })
 
 longoButton.addEventListener('click', () => {
-    html.setAttribute('data-context', 'long');
+    changeContext('long');
 })
+
+function changeContext (context) {
+    html.setAttribute('data-context', context);
+    banner.setAttribute('src', `/images/${context}.png`);
+}

@@ -1,5 +1,5 @@
 const html = document.querySelector('html');
-const startButton = document.querySelector('.app__card-primary-button');
+const startButton = document.querySelector('#start-pause');
 const focoButton = document.querySelector('.app__card-button--foco');
 const curtoButton = document.querySelector('.app__card-button--curto');
 const longoButton = document.querySelector('.app__card-button--longo');
@@ -8,8 +8,17 @@ const banner = document.querySelector('.app__image');
 const title = document.querySelector('.app__title');
 const buttons = document.querySelectorAll('.app__card-button');
 const songInput = document.querySelector('#alternar-musica');
+
 const song = new Audio('./sounds/luna-rise-part-one.mp3');
 song.loop = true;
+
+const audioPlay = new Audio('./sounds/play.wav');
+const audioPause = new Audio('./sounds/pause.mp3');
+const finishAudio = new Audio('./sounds/beep.mp3');
+
+
+let elapsedTime = 5;
+let intervalId = null;
 
 const focoDuration = 1500;
 const curtoDuration = 300;
@@ -58,4 +67,33 @@ function changeContext (context) {
         default:
             break;
     }
+}
+
+const countdown = () => {
+    if(elapsedTime <= 0) {
+        finishAudio.play();
+        alert('Tempo Finalizado!');
+        stopTimer();
+        return;
+    }
+    elapsedTime --;
+    console.log('elapsedTime: ' + elapsedTime);
+}
+
+startButton.addEventListener('click', startTimer);
+
+//this function starts and pauses time.
+function startTimer () {
+    if(intervalId){
+        audioPause.play();
+        stopTimer();
+        return;
+    }
+    audioPlay.play();    
+    intervalId = setInterval(countdown, 1000);
+}
+
+function stopTimer () {
+    clearInterval(intervalId);
+    intervalId = null;
 }

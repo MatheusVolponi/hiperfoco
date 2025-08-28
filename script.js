@@ -6,24 +6,40 @@ const longoButton = document.querySelector('.app__card-button--longo');
 const timeDisplay = document.querySelector('#timer');
 const banner = document.querySelector('.app__image');
 const title = document.querySelector('.app__title');
+const buttons = document.querySelectorAll('.app__card-button');
+const songInput = document.querySelector('#alternar-musica');
+const song = new Audio('./sounds/luna-rise-part-one.mp3');
+song.loop = true;
 
 const focoDuration = 1500;
 const curtoDuration = 300;
 const longoDuration = 900;
 
+songInput.addEventListener('change', () => {
+    if(song.paused) {
+        song.play();
+    } else {
+        song.pause();
+    }
+})
+
 focoButton.addEventListener('click', () => {
     changeContext('foco');
+    focoButton.classList.add('active');
 })
 
 curtoButton.addEventListener('click', () => {
     changeContext('short');
+    curtoButton.classList.add('active');
 })
 
 longoButton.addEventListener('click', () => {
     changeContext('long');
+    longoButton.classList.add('active');
 })
 
 function changeContext (context) {
+    buttons.forEach(button => button.classList.remove('active'));
     html.setAttribute('data-context', context);
     banner.setAttribute('src', `/images/${context}.png`);
     switch (context) {

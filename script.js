@@ -1,5 +1,7 @@
 const html = document.querySelector('html');
 const startButton = document.querySelector('#start-pause');
+const startButtonText = document.querySelector('#start-pause span');
+const startButtonIcon = document.querySelector('.app__card-primary-button-icon');
 const focoButton = document.querySelector('.app__card-button--foco');
 const curtoButton = document.querySelector('.app__card-button--curto');
 const longoButton = document.querySelector('.app__card-button--longo');
@@ -17,19 +19,19 @@ const audioPause = new Audio('./sounds/pause.mp3');
 const finishAudio = new Audio('./sounds/beep.mp3');
 
 
-let elapsedTime = 5;
+let elapsedTime = 1500;
 let intervalId = null;
 
 const focoDuration = 1500;
 const curtoDuration = 300;
 const longoDuration = 900;
 
+const controlMusic = () => {
+(intervalId && songInput.checked) ? song.play() : song.pause();
+}
+
 songInput.addEventListener('change', () => {
-    if(song.paused) {
-        song.play();
-    } else {
-        song.pause();
-    }
+    controlMusic();
 })
 
 focoButton.addEventListener('click', () => {
@@ -48,36 +50,43 @@ longoButton.addEventListener('click', () => {
 })
 
 function changeContext (context) {
+    if (intervalId) {
+        stopTimer();
+    }
     buttons.forEach(button => button.classList.remove('active'));
     html.setAttribute('data-context', context);
     banner.setAttribute('src', `/images/${context}.png`);
     switch (context) {
         case 'foco':
+            elapsedTime = focoDuration;
             title.innerHTML = `Otimize sua produtividade,<br>
                 <strong class="app__title-strong">mergulhe no que importa.</strong>`;
             break;
         case 'short':
+            elapsedTime = curtoDuration;
             title.innerHTML = `Que tal dar uma respirada?<br>
                 <strong class="app__title-strong">Faça uma pausa curta!</strong>`;
             break;
         case 'long':
+            elapsedTime = longoDuration;
             title.innerHTML = `Hora de voltar à superfície.<br>
                 <strong class="app__title-strong">Faça uma pausa longa.</strong>`;
             break;
         default:
             break;
     }
+    showTimer();
 }
 
 const countdown = () => {
     if(elapsedTime <= 0) {
         finishAudio.play();
-        alert('Tempo Finalizado!');
         stopTimer();
+        changeContext(html.getAttribute('data-context'));
         return;
     }
     elapsedTime --;
-    console.log('elapsedTime: ' + elapsedTime);
+    showTimer();
 }
 
 startButton.addEventListener('click', startTimer);
@@ -89,11 +98,25 @@ function startTimer () {
         stopTimer();
         return;
     }
-    audioPlay.play();    
+    audioPlay.play();
     intervalId = setInterval(countdown, 1000);
+    startButtonText.textContent = 'Pausar';
+    startButtonIcon.setAttribute('src', './images/pause.png');
+    controlMusic();
 }
 
 function stopTimer () {
     clearInterval(intervalId);
     intervalId = null;
+    startButtonText.textContent = 'Começar';
+    startButtonIcon.setAttribute('src', './images/play_arrow.png');
+    controlMusic();
 }
+
+function showTimer () {
+    const time = new Date(elapsedTime * 1000);
+    const formattedTime = time.toLocaleTimeString('pt-Br', {minute: '2-digit', second: '2-digit'});
+    timeDisplay.innerHTML = `${formattedTime}`;
+}
+
+showTimer();

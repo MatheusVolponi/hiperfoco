@@ -55,7 +55,7 @@ function changeContext (context) {
     }
     buttons.forEach(button => button.classList.remove('active'));
     html.setAttribute('data-context', context);
-    banner.setAttribute('src', `/images/${context}.png`);
+    banner.setAttribute('src', `images/${context}.png`);
     switch (context) {
         case 'foco':
             elapsedTime = focoDuration;
